@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  server:
+    container_name: server
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+      DATABASE_HOST: database
+    ports:
+      - 3000:3000
+    networks:
+      - tradesee-network
+    depends_on:
+      - database
+
+  database:
+    container_name: database
+    image: mysql
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - tradesee-mysql-data:/var/lib/mysql
+    networks:
+      - tradesee-network
+
+volumes:
+  tradesee-mysql-data:
+
+networks:
+  tradesee-network:
+    name: tradesee-network
